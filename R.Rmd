@@ -1,0 +1,180 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+<br>
+<br>
+
+## Import Necessary Packages, Set Path and Working Directory
+```{r}
+library(dplyr)
+library(haven)
+library(tidyverse) 
+library(stargazer)
+library(lmtest)#To do Breusch Pagan Test https://www.statology.org/breusch-pagan-test-r/
+library(MASS)#For robust se statology.org/robust-regression-in-r/
+
+
+options("repos" = c(CRAN = "http://lib.stat.cmu.edu/R/CRAN/"))
+
+setwd("/Users/liamchentoufi/Desktop/590/presentation-and-final-project-LiamChentoufi")
+#I will save my regression outputs to this folder's working directory
+#I also manually set my working directory using the Session menu above, for some reason it appeared to not be set at first
+
+path <- '/Users/liamchentoufi/Desktop/590/presentation-and-final-project-LiamChentoufi/path/speechfinal.csv'
+#Path to csv including speechfinal.csv
+
+
+```
+
+<br>
+<br>
+
+## First Regression
+```{r}
+speech <- read_csv(path)#I first read in the speech csv which has its path assigned to the "path" variable
+
+speech$Reserves=speech$Reserves/1000000
+#Since reserves are in already in millions, 3.1 for reserves will be 3.1 trillion I believe 
+#I applied this to the reserves variable because prior to doing so, my coefficients were very tiny
+
+
+x <- 2
+#This variable was created so I can easily adjust the lags for each variable
+#Currently, the lag is set to two months. I saw the largest increase to coefficients for speeches such as inflation related speeches with this lag, any further and the coefficients decrease slightly.
+#It feels strange to play with the data in this way so I am unsure if I am using lags in the intended way
+
+#PCE effect goes down when lagged
+
+m1 <- rlm(EFFR ~ Reserves + PCE_YOY + lag(Total, x) + lag(Inflation_Related, x) + lag(Expectation_Related, x)	+ lag(Resolve_Related, x)	+ lag(Recession_Related, x)	+ lag(Employment_Related, x)	+ lag(Wage_Related, x)	+ lag(Instability_Related, x)	+ lag(Crisis_Related, x)	+ lag(Rate_Related, x)	+ lag(Spread_Related, x)	+ lag(Easing_Related, x)	+ lag(Tightening_Related, x)	+ lag(Uncertainty_Related, x)	+ lag(Output_Related, x)	+ lag(Declining_Related, x)	+ lag(Rising_Related, x)	+ lag(Concern_Related, x)	+ lag(Labor_Related, x)	+ lag(Interest_Related, x), data=speech)
+
+#I learned of the MASS library to run regressions with robust standard errors throughhttps://www.statology.org/robust-regression-in-r/
+
+#After testing for heteroskedasticity, I ran a robust regression using "rlm"
+
+bptest(m1)#Such a small p-value indicates that we have evidence to reject the null hypothesis. Heteroskedasticity may be present
+
+#I learned how to do a hettest in R through https://www.statology.org/breusch-pagan-test-r/
+
+stargazer(m1,
+          
+          title = "Effect of Fed Speech Topic on the Effective Federal Funds Rate",
+          
+          type="html", 
+          
+          dep.var.labels = "EFFR (Percent)", 
+          
+          covariate.labels = c( "Bank Reserves (Trillions USD)",
+            "% Change in PCE YoY Inflation Rate",             
+           "Total Monthly Speeches",
+           "\"Inflation\" Related Speeches", 
+           "\"Expectation\" Related Speeches",
+           "\"Resolve\" Related Speeches",
+           "\"Recession\" Related Speeches",
+           "\"Employment\" Related Speeches",
+           "\"Wage\" Related Speeches",
+           "\"Instability\" Related Speeches",
+           "\"Crisis\" Related Speeches",
+           "\"Rate\" Related Speeches",
+           "\"Spread\" Related Speeches",
+           "\"Easing\" Related Speeches",
+           "\"Tightening\" Related Speeches",
+           "\"Uncertainty\" Related Speeches",
+           "\"Output\" Related Speeches",
+           "\"Declining\" Related Speeches",
+           "\"Rising\" Related Speeches",
+           "\"Concern\" Related Speeches",
+           "\"Labor\" Related Speeches",
+           "\"Interest\" Related Speeches"), 
+          
+          notes.label = "Note: Standard Deviations in Parentheses",
+          
+          notes = c("Keyword speeches refer to the monthly sum of speeches in which","the keyword is mentioned five or more times"),
+          
+          out="model1.html")
+
+#The above stargazer function will allow us to transfer our regression results to a customizable table. I used the title argument to set the title of the model, I renamed the dependent variable label to EFFR and indicated it is already in percent, I used the "covariate.labels" argument to rename each independent variable to neater names, I used the "notes" and "notes.label" argument to set a note message.
+#This output was saved as an html file under the name "model1.html"
+
+```
+<br>
+<br>
+
+## Second and Third Regressions
+```{r}
+
+m2 <- rlm(EFFR ~ Reserves + PCE_YOY + lag(Total, x) + lag(Inflation_Related, x) + lag(Recession_Related, x)	+ lag(Instability_Related, x)	+ lag(Crisis_Related, x) + lag(Rising_Related, x)	+ lag(Labor_Related, x), data=speech)
+
+
+m3 <-  rlm(EFFR ~ Reserves + PCE_YOY + lag(Total, x) + lag(Inflation_Related, x) + lag(Recession_Related, x)*lag(Instability_Related, x) + lag(Crisis_Related, x) + lag(Rising_Related, x)	+ lag(Labor_Related, x), data=speech)
+
+stargazer(m2,m3,
+          
+          title = "Effect of Fed Speech Topic on the Effective Federal Funds Rate",
+          
+          type="html", 
+          
+          dep.var.labels = "EFFR (Percent)", 
+          
+          covariate.labels = c( "Bank Reserves (Trillions USD)",
+            "% Change in PCE YoY Inflation Rate",             
+           "Total Monthly Speeches",
+           "\"Inflation\" Related Speeches",
+           "\"Recession\" Related Speeches",
+           "\"Instability\" Related Speeches",
+           "\"Crisis\" Related Speeches",
+           "\"Rising\" Related Speeches",
+           "\"Labor\" Related Speeches",
+           "\"Recession\" X \"Instability Speeches"), 
+          
+          notes.label = "Note: Standard Deviations in Parentheses",
+          
+          notes = c("Keyword speeches refer to the monthly sum of speeches in which","the keyword is mentioned five or more times"),
+          
+          column.labels = c("OLS","OLS Interaction"),
+          
+          
+          out="model2and3.html")
+
+#Similar to my initial regression, I used stargazer to show the output of my two following models. The only difference is I specified a "column.labels" variable to name each model's column as this output has two columns of OLS results.
+
+```
+<br>
+<br>
+
+## Detailed Regressions 2 and 3
+```{r}
+
+stargazer(m2,m3,
+          
+          title = "Effect of Fed Speech Topic on the Effective Federal Funds Rate",
+          
+          type="html", 
+          
+          dep.var.labels = "EFFR (Percent)", 
+          
+          covariate.labels = c( "Bank Reserves (Trillions USD)",
+            "% Change in PCE YoY Inflation Rate",             
+           "Total Monthly Speeches",
+           "\"Inflation\" Related Speeches",
+           "\"Recession\" Related Speeches",
+           "\"Instability\" Related Speeches",
+           "\"Crisis\" Related Speeches",
+           "\"Rising\" Related Speeches",
+           "\"Labor\" Related Speeches",
+           "\"Recession\" X \"Instability Speeches"), 
+          
+          notes.label = "Note: Standard Deviations in Parentheses",
+          
+          notes = c("Keyword speeches refer to the monthly sum of speeches in which","the keyword is mentioned five or more times"),
+          
+          column.labels = c("OLS","OLS Interaction"),
+          
+          report="vcstp",
+          
+          out="model2and3detailed.html")
+
+#This output is the same as the above stargazer with a minor change. I added the "report" argument and by specifying that we want the "vcstp" report, this will add the t-statistics, p-values, and standard errors under the coefficients as opposed to just choosing one.
+
+```
+
