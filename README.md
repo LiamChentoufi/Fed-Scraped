@@ -24,6 +24,3 @@ All regression outputs are saved in the main area of the repository under the na
 All data has been web scraped from The Federal Reserve's Board of Governors speech archive at, https://www.federalreserve.gov/newsevents/speeches.htm.
 <br>
 Additionally, earlier data was collected from, https://www.federalreserve.gov/newsevents/speech/speeches-archive.htm, for speeches before 2006.
-
-<br>
-Thank you for taking the time to visit this repository!
