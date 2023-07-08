@@ -13,7 +13,6 @@ My final data file is named "speechfinal.csv"
 All data has been webscraped from The Federal Reserve's Board of Governors speech archive at, https://www.federalreserve.gov/newsevents/speeches.htm.
 Additionally, earlier data was collected from, https://www.federalreserve.gov/newsevents/speech/speeches-archive.htm, for speeches before 2006.
 
-Improvements do still need to be made to my scraper.
 
 <br>
 
