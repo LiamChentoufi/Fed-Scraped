@@ -1,4 +1,4 @@
-# How Do Federal Reserve Speech Topics Affect the Federal Funds Rate? - ECO 590 Final Project
+# ECO 590 Final Project - How Do Federal Reserve Speech Topics Affect the Federal Funds Rate?
 
 Please feel free to adjust these paths as needed under the "Setting Paths" cell in the Python Notebook.
 
