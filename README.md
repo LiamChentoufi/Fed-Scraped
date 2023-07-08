@@ -1,8 +1,9 @@
 # ECO 590 Final Project
 # How Do Federal Reserve Speech Topics Affect the Federal Funds Rate?
 
-Please feel free to adjust these paths as needed under the "Setting Paths" cell in the Python Notebook.
+Please feel free to adjust the file paths as needed under the "Setting Paths" cell in the Python Notebook.
 
+<br>
 The "path" folder includes all of my scraped data as well as my plotted figures.
 <br>
 The "external" folder includes all external CSV files utilized when merging to create a larger dataset for regressions.
