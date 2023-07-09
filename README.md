@@ -18,7 +18,7 @@ The "Python.ipynb" includes the program that does all web scraping, data cleanin
 <br>
 The "R.Rmd" includes the program used to run each regression on the collected data.
 <br>
-All regression outputs are saved in the main area of the repository under the names "model1.html" and "model2and3.html".
+All regression output is saved in the main area of the repository under the names "model1.html" and "model2and3.html".
 
 <br>
 All data has been web scraped from The Federal Reserve's Board of Governors speech archive at, https://www.federalreserve.gov/newsevents/speeches.htm.
