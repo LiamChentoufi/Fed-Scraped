@@ -16,7 +16,7 @@ My final data file is named "speechfinal.csv"
 
 The "Python.ipynb" includes the program that does all web scraping, data cleaning, and figure creation.
 <br>
-The "R.rmd" includes the program used to run each regression on the collected data.
+The "R.Rmd" includes the program used to run each regression on the collected data.
 <br>
 All regression outputs are saved in the main area of the repository under the names "model1.html" and "model2and3.html".
 
